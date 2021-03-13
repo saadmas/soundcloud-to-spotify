@@ -1,9 +1,11 @@
 import * as React from 'react';
 
+import './Login.css';
+
 const Login = () => {
   return (
-    <div>
-      Login!
+    <div className="login">
+      <button className="loginButton">Connect to Spotify</button>
     </div>
   );
 };

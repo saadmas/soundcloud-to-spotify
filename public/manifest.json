@@ -22,7 +22,10 @@
       ],
       "js": [
         "content.js"
-      ]
+      ] 
     }
+  ],
+  "permissions": [
+    "https://*.spotify.com/"
   ]
 }

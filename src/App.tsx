@@ -3,16 +3,17 @@ import Converter from "./Components/Converter/Converter";
 const { useState } = React;
 
 import Login from "./Components/Login/Login";
+import './App.css';
 
 const App = () => {
   const [token, setToken] = useState<string>('');
 
   return (
-    <div className="App">
-      <header>
+    <div className="app">
+      <header className="header">
         SoundCloud to Spotify
       </header>
-      { token ? <Login /> : <Converter />}
+      {token ? <Converter /> : <Login />}
     </div>
   );
 };
