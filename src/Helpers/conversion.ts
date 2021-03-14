@@ -1,11 +1,20 @@
-const playlistPathParameter = 'sets';
+import { ConversionType } from "../types";
 
-export function getConversionPrompt(soundCloudPath: string): string {
+export function getConversionPromptText(conversionType: ConversionType): string {
+  switch (conversionType) {
+    case 'playlist':
+      return 'Convert to Spotify playlist';
+    default:
+      return ''
+  }
+}
+
+export function getConversionTypeFromSoundCloudPath(soundCloudPath: string): ConversionType {
   const pathParameters = soundCloudPath.split('/');
 
-  if (pathParameters[2] === playlistPathParameter) {
-    return `Convert to Spotify playlist`;
+  if (pathParameters[2] === 'sets') {
+    return 'playlist';
   }
 
-  return '';
+  return 'playlist';
 }

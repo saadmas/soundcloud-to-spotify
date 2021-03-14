@@ -6,9 +6,11 @@ import Converter from "./Components/Converter/Converter";
 import Header from "./Components/Header/Header";
 
 import './App.css';
+import { ConversionType } from "./types";
+import { getConversionTypeFromSoundCloudPath } from "./Helpers/conversion";
 
 const App = () => {
-  const [soundCloudPath, setSoundCloudPath] = useState<string>('');
+  const [conversionType, setConversionType] = useState<ConversionType | undefined>(undefined);
  
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -21,14 +23,14 @@ const App = () => {
       const { hostname, pathname } = url; /// match on path as well
 
       if (hostname.includes('soundcloud.com')) {
-        setSoundCloudPath(pathname);
+        setConversionType(getConversionTypeFromSoundCloudPath(pathname));
       }
     }); 
   }, []);
 
   const renderAppContent = (): JSX.Element => {
-    return soundCloudPath ?
-      <Converter soundCloudPath={soundCloudPath}/> :
+    return conversionType ?
+      <Converter conversionType={conversionType}/> :
       <div className="visitSoundCloud">Please visit SoundCloud to use this extension.</div>;
   };
 

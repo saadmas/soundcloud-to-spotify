@@ -4,6 +4,8 @@ export const AUTH_SUCCESS = 'AUTH SUCCESS';
 export const CONVERT_PLAYLIST = 'CONVERT PLAYLIST';
 export const GET_PLAYLIST = 'GET PLAYLIST';
 
+export type ConversionType = 'playlist' | 'track' | 'likes' | 'album';
+
 export interface Track {
   name: string;
   artists: string;

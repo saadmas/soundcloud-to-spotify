@@ -1,21 +1,18 @@
 import * as React from 'react';
 const { useState } = React;
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
 
-import { AUTH_FAIL, AUTH_SUCCESS, GET_PLAYLIST, LOGIN, Message } from '../../types';
-import { getConversionPrompt } from '../../Helpers/conversion';
-
+import { AUTH_FAIL, AUTH_SUCCESS, ConversionType, GET_PLAYLIST, LOGIN, Message } from '../../types';
 import './Converter.css';
 import Loader from '../Loader/Loader';
+import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
 
 const LOGIN_FAIL_ERROR = 'There was an error connecting to your Spotify account. Please try again.'
 
 interface ConverterProps {
-  soundCloudPath: string;
+  conversionType: ConversionType;
 }
 
-const Converter = ({ soundCloudPath }: ConverterProps) => {
+const Converter = ({ conversionType }: ConverterProps) => {
   /// render Auth Fail error bar
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [spotifyToken, setSpotifyToken] = useState<string>('');
@@ -67,38 +64,24 @@ const Converter = ({ soundCloudPath }: ConverterProps) => {
     convertToSpotify();
   };
 
- 
-
-  const renderConvertButton = () => {
+  
+  const renderConverterContent = () => {
     if (isLoading) {
-      return null;
+      return <Loader />;
     }
-
-    const ConvertButton = withStyles({
-      root: {
-        textTransform: 'none',
-        fontSize: 14,
-        backgroundColor: '#fff',
-        height: 40,
-        width: 200,
-        '&:hover': {
-          opacity: 0.5,
-          backgroundColor: '#fff',
-        },
-      },
-    })(Button);
-    
     return (
-      <ConvertButton onClick={onConvertClick}>
-        {getConversionPrompt(soundCloudPath)}
-      </ConvertButton>
+      <ConversionPrompt
+        onConvertClick={onConvertClick}
+        conversionType={conversionType}
+      />
     );
   };
 
+  
+
   return (
     <div className="converter">
-      {renderConvertButton()}
-      {isLoading && <Loader />}
+      {renderConverterContent()}
     </div>
   );
 };
