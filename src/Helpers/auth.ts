@@ -44,7 +44,7 @@ export function onAuthRedirect(
     return;
   }
 
-  sendResponse({ type: AUTH_SUCCESS, payload: accessToken });
+  sendResponse({ type: AUTH_SUCCESS, token: accessToken });
 }
 
 export function getResponseParametersFromHash(hash: string): Map<string, string> {
