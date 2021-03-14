@@ -32,6 +32,7 @@
   ],
   "permissions": [
     "https://*.spotify.com/",
-    "identity"
+    "identity",
+    "tabs"
   ]
 }

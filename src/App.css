@@ -1,8 +1,17 @@
 .app {
   width: 400px;
+  min-height: 100px;
+  background: rgba(31,5,5,1);
+  color: #fff;
 }
 
-.app .header {
-  width: 100%;
-  padding: 5px;
+body {
+  margin: 0;
+}
+
+.visitSoundCloud {
+  padding: 20px;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
 }

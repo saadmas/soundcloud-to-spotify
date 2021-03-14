@@ -1,5 +1,7 @@
 import * as React from 'react';
 const { useState } = React;
+import Button from '@material-ui/core/Button';
+
 import { AUTH_FAIL, AUTH_SUCCESS, LOGIN, Message } from '../../types';
 
 import './Login.css';
@@ -37,9 +39,9 @@ const Login = ({ setToken }: LoginProps) => {
 
   return (
     <div className="login">
-      <button className="loginButton" onClick={connectToSpotify}>
+      <Button className="loginButton" onClick={connectToSpotify}>
         Connect to Spotify
-      </button>
+      </Button>
   </div>
   );
 };
