@@ -3,7 +3,7 @@ const { useState } = React;
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
-import { AUTH_FAIL, AUTH_SUCCESS, LOGIN, Message } from '../../types';
+import { AUTH_FAIL, AUTH_SUCCESS, GET_PLAYLIST, LOGIN, Message } from '../../types';
 import { getConversionPrompt } from '../../Helpers/conversion';
 
 import './Converter.css';
@@ -41,8 +41,21 @@ const Converter = ({ soundCloudPath }: ConverterProps) => {
     }
   };
 
+  const getConversionType = (): string => {
+    return GET_PLAYLIST;
+  };
+
   const convertToSpotify = (token?: string) => {
     const authToken = token ?? spotifyToken;
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const currentTabId = tabs[0]?.id;
+      if (currentTabId === undefined) {
+        return;
+      }
+      chrome.tabs.sendMessage(currentTabId, { type: getConversionType() }, (response) => {
+        console.log(response);
+      });
+    });
   };
 
   const onConvertClick = () => {
@@ -54,30 +67,33 @@ const Converter = ({ soundCloudPath }: ConverterProps) => {
     convertToSpotify();
   };
 
-  const ConvertButton = withStyles({
-    root: {
-      textTransform: 'none',
-      fontSize: 14,
-      backgroundColor: '#fff',
-      height: 40,
-      width: 160,
-      '&:hover': {
-        opacity: 0.5,
-        backgroundColor: '#fff',
-      },
-    },
-  })(Button);
+ 
 
   const renderConvertButton = () => {
-    if (!isLoading) {
-      return (
-        <ConvertButton onClick={onConvertClick}>
-          {getConversionPrompt(soundCloudPath)}
-        </ConvertButton>
-      );
+    if (isLoading) {
+      return null;
     }
-    return null;
-  }
+
+    const ConvertButton = withStyles({
+      root: {
+        textTransform: 'none',
+        fontSize: 14,
+        backgroundColor: '#fff',
+        height: 40,
+        width: 200,
+        '&:hover': {
+          opacity: 0.5,
+          backgroundColor: '#fff',
+        },
+      },
+    })(Button);
+    
+    return (
+      <ConvertButton onClick={onConvertClick}>
+        {getConversionPrompt(soundCloudPath)}
+      </ConvertButton>
+    );
+  };
 
   return (
     <div className="converter">
