@@ -19,6 +19,7 @@ const App = () => {
         return;
       }
       const parsedUrl = new URLParse(currentTab.url);
+      console.log(tryGetConversionTypeFromUrl(parsedUrl))
       setConversionType(tryGetConversionTypeFromUrl(parsedUrl));
     }); 
   }, []);
@@ -26,7 +27,7 @@ const App = () => {
   const renderAppContent = (): JSX.Element => {
     return conversionType ?
       <Converter conversionType={conversionType}/> :
-      <div className="openSoundCloud">Please open a SoundCloud playlist or album to use this extension.</div>;
+      <div className="openSoundCloud">Please open a SoundCloud playlist, album, or your Likes, to use this extension.</div>;
   };
 
   return (

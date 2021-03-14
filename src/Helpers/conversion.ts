@@ -20,12 +20,13 @@ export function tryGetConversionTypeFromUrl(url: URLParse): ConversionType | und
   const pathParameters = pathname.split('/');
   const primaryParameter = pathParameters[2];
 
-  switch (primaryParameter) {
-    case 'sets':
-      return 'playlist';
-    case 'likes':
-      return 'likes';
-    default:
-      return;
+  if (pathParameters.length > 3 && primaryParameter === 'sets') {
+    return 'playlist';
   }
+
+  if (primaryParameter === 'likes') {
+    return 'likes';
+  }
+
+  return;
 }

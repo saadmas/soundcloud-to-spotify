@@ -1,10 +1,12 @@
 import * as React from 'react';
 const { useState } = React;
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { ConversionType, Message } from '../../types';
 import './Converter.css';
 import Loader from '../Loader/Loader';
 import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
+import { withStyles } from '@material-ui/core/styles';
 
 const LOGIN_FAIL_ERROR = 'There was an error connecting to your Spotify account. Please try again.'
 
@@ -13,7 +15,6 @@ interface ConverterProps {
 }
 
 const Converter = ({ conversionType }: ConverterProps) => {
-  /// render Auth Fail error bar
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [spotifyToken, setSpotifyToken] = useState<string>('');
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -83,10 +84,32 @@ const Converter = ({ conversionType }: ConverterProps) => {
     );
   };
 
+  const renderErrorBar = () => {
+    if (!errorMessage) {
+      return null;
+    }
+
+    const Alert = withStyles({
+      root: {
+        fontSize: 12
+      },
+    })(MuiAlert);
+
+    return (
+      <Alert
+        severity="error"
+        elevation={6}
+        variant="filled"
+      >
+        {errorMessage}
+      </Alert>
+    );
+  };
   
 
   return (
     <div className="converter">
+      {renderErrorBar()}
       {renderConverterContent()}
     </div>
   );
