@@ -13,7 +13,7 @@ const App = () => {
       <header className="header">
         SoundCloud to Spotify
       </header>
-      {token ? <Converter /> : <Login />}
+      {token ? <Converter /> : <Login setToken={setToken}/>}
     </div>
   );
 };
