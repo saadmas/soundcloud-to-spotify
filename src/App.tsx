@@ -27,7 +27,7 @@ const App = () => {
   const renderAppContent = (): JSX.Element => {
     return conversionType ?
       <Converter conversionType={conversionType}/> :
-      <div className="openSoundCloud">Please open a SoundCloud playlist, album, or your Likes, to use this extension.</div>;
+      <div className="openSoundCloud">To use this extension, open a SoundCloud playlist, album, or your Likes.</div>;
   };
 
   return (
