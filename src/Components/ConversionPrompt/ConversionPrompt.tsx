@@ -15,12 +15,14 @@ const ConversionPrompt = ({ onConvertClick, conversionType }: ConversionPromptPr
       root: {
         textTransform: 'none',
         fontSize: 14,
-        backgroundColor: '#fff',
+        backgroundColor: 'rgba(29,185,84,1)',
+        color: '#fff',
         height: 40,
         width: 200,
         '&:hover': {
-          opacity: 0.5,
-          backgroundColor: '#fff',
+          opacity: 0.9,
+          backgroundColor: 'rgba(29,185,84,1)',
+          color: '#fff',
         },
       },
     })(Button);

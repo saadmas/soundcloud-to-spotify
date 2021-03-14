@@ -1,4 +1,4 @@
-export type ConversionType = 'playlist' | 'track' | 'likes' | 'album';
+export type ConversionType = 'playlist' | 'likes';
 
 export interface Track {
   name: string;

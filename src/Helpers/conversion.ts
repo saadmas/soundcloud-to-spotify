@@ -1,3 +1,4 @@
+import * as URLParse from "url-parse";
 import { ConversionType } from "../types";
 
 export function getConversionPromptText(conversionType: ConversionType): string {
@@ -9,12 +10,22 @@ export function getConversionPromptText(conversionType: ConversionType): string 
   }
 }
 
-export function getConversionTypeFromSoundCloudPath(soundCloudPath: string): ConversionType {
-  const pathParameters = soundCloudPath.split('/');
+export function tryGetConversionTypeFromUrl(url: URLParse): ConversionType | undefined {
+  const { hostname, pathname } = url;
 
-  if (pathParameters[2] === 'sets') {
-    return 'playlist';
+  if (!hostname.includes('soundcloud.com')) {
+    return;
   }
 
-  return 'playlist';
+  const pathParameters = pathname.split('/');
+  const primaryParameter = pathParameters[2];
+
+  switch (primaryParameter) {
+    case 'sets':
+      return 'playlist';
+    case 'likes':
+      return 'likes';
+    default:
+      return;
+  }
 }
