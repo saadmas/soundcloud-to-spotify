@@ -1,7 +1,7 @@
 import * as React from 'react';
 const { useState } = React;
 
-import { AUTH_FAIL, AUTH_SUCCESS, ConversionType, GET_PLAYLIST, LOGIN, Message } from '../../types';
+import { ConversionType, Message } from '../../types';
 import './Converter.css';
 import Loader from '../Loader/Loader';
 import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
@@ -21,10 +21,10 @@ const Converter = ({ conversionType }: ConverterProps) => {
   const onSpotifyConnect = (message: Message) => {
     const { type } = message;
     switch (type) {
-      case AUTH_FAIL:
+      case 'AUTH FAIL':
         setErrorMessage(LOGIN_FAIL_ERROR);
         break;
-      case AUTH_SUCCESS:
+      case 'AUTH SUCCESS':
         if ('token' in message) {
           setSpotifyToken(message.token);
           convertToSpotify(message.token);
@@ -38,8 +38,13 @@ const Converter = ({ conversionType }: ConverterProps) => {
     }
   };
 
-  const getConversionType = (): string => {
-    return GET_PLAYLIST;
+  const getConversionMessage = (): Message => {
+    switch (conversionType) {
+      case 'playlist':
+        return { type: 'GET PLAYLIST' };
+      default:
+        return { type: 'GET PLAYLIST' };
+    }
   };
 
   const convertToSpotify = (token?: string) => {
@@ -49,7 +54,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
       if (currentTabId === undefined) {
         return;
       }
-      chrome.tabs.sendMessage(currentTabId, { type: getConversionType() }, (response) => {
+      chrome.tabs.sendMessage(currentTabId, getConversionMessage(), (response) => {
         console.log(response);
       });
     });
@@ -58,7 +63,8 @@ const Converter = ({ conversionType }: ConverterProps) => {
   const onConvertClick = () => {
     setLoading(true);
     if (!spotifyToken) {
-      chrome.runtime.sendMessage({ type: LOGIN }, onSpotifyConnect);
+      const loginMessage: Message = { type: 'LOGIN' };
+      chrome.runtime.sendMessage(loginMessage, onSpotifyConnect);
       return;
     }
     convertToSpotify();

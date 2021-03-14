@@ -10,7 +10,7 @@ interface ConversionPromptProps {
 }
 
 const ConversionPrompt = ({ onConvertClick, conversionType }: ConversionPromptProps) => {
-  const renderConvertButton = () => {
+  const getConvertButton = () => {
     const ConvertButton = withStyles({
       root: {
         textTransform: 'none',
@@ -33,16 +33,19 @@ const ConversionPrompt = ({ onConvertClick, conversionType }: ConversionPromptPr
   };
 
   const renderConversionPrompt = () => {
-
+    switch (conversionType) {
+      case 'playlist':
+        return getConvertButton();
+      default:
+        return null;
+    }
   };
 
   return (
     <div>
       {renderConversionPrompt()}
     </div>
-  )
-
-
+  );
 };
 
 export default ConversionPrompt;

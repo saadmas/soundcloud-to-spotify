@@ -1,4 +1,4 @@
-import { LOGIN, Message } from "./types";
+import { Message } from "./types";
 import { getSpotifyAuthUrl, onAuthRedirect } from "./Helpers/auth";
 
 chrome.runtime.onMessage.addListener(chromeMessageHandler);
@@ -9,7 +9,7 @@ function chromeMessageHandler(
   sendResponse: (response?: Message) => void
 ) {
   switch (message.type) {
-    case LOGIN:
+    case 'LOGIN':
       const STATE = encodeURIComponent('meet' + Math.random().toString(36).substring(2, 15));
       chrome.identity.launchWebAuthFlow(
         { url: getSpotifyAuthUrl(STATE), interactive: true },

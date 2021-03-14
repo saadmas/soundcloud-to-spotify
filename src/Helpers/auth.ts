@@ -1,5 +1,5 @@
 import * as URLParse from "url-parse";
-import { AUTH_FAIL, AUTH_SUCCESS, Message } from "../types";
+import { Message } from "../types";
 
 export function getSpotifyAuthUrl(state: string): string {
   const clientId = 'f5a2c30e102140d0970820bcd154dba8';
@@ -25,12 +25,12 @@ export function onAuthRedirect(
   redirectUrl?: string
 ) {
   if (!redirectUrl) {
-    sendResponse({ type: AUTH_FAIL });
+    sendResponse({ type: 'AUTH FAIL' });
     return;
   }
 
   if (chrome.runtime.lastError || redirectUrl.includes('callback?error=access_denied')) {
-    sendResponse({ type: AUTH_FAIL });
+    sendResponse({ type: 'AUTH FAIL' });
     return;
   }
 
@@ -40,11 +40,11 @@ export function onAuthRedirect(
   const responseState = responseParameters.get('state');
 
   if (state !== responseState || !accessToken) {
-    sendResponse({ type: AUTH_FAIL });
+    sendResponse({ type: 'AUTH FAIL' });
     return;
   }
 
-  sendResponse({ type: AUTH_SUCCESS, token: accessToken });
+  sendResponse({ type: 'AUTH SUCCESS', token: accessToken });
 }
 
 export function getResponseParametersFromHash(hash: string): Map<string, string> {

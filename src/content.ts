@@ -1,10 +1,4 @@
-import { CONVERT_PLAYLIST, GET_PLAYLIST, Message, Track } from "./types";
-
-const playListNameSelector = '.soundTitle__title';
-const trackListSelector = '.trackList__list';
-const trackItemSelector = '.trackList__item';
-const trackArtistSelector = '.trackItem__username';
-const trackNameSelector = '.trackItem__trackTitle';
+import { Message, Track } from "./types";
 
 chrome.runtime.onMessage.addListener(chromeMessageHandler);
 
@@ -14,9 +8,9 @@ function chromeMessageHandler(
   sendResponse: (response?: Message) => void
 ) {
   switch (message.type) {
-    case GET_PLAYLIST:
+    case 'GET PLAYLIST':
       sendResponse({
-        type: CONVERT_PLAYLIST,
+        type: 'CONVERT PLAYLIST',
         name: getPlaylistName(),
         tracks: getPlaylistTracks()
       });
@@ -28,15 +22,15 @@ function chromeMessageHandler(
 }
 
 function getPlaylistName(): string {
-  const playlistName = document.querySelector(playListNameSelector)?.textContent?.trim();
+  const playlistName = document.querySelector('.soundTitle__title')?.textContent?.trim();
   return playlistName ?? '';
 }
 
 function getPlaylistTracks(): Track[] {
   const tracks: Track[] = [];
   
-  const trackListElement = document.querySelector(trackListSelector);
-  const trackElements = trackListElement?.querySelectorAll(trackItemSelector);
+  const trackListElement = document.querySelector('.trackList__list');
+  const trackElements = trackListElement?.querySelectorAll('.trackList__item');
 
   if (!trackElements) {
     return tracks;
@@ -44,8 +38,8 @@ function getPlaylistTracks(): Track[] {
 
   const trackElementsArray = Array.from(trackElements);
   for (const trackElement of trackElementsArray) {
-    const artists = trackElement.querySelector(trackArtistSelector)?.textContent?.trim() ?? '';
-    const name = trackElement.querySelector(trackNameSelector)?.textContent?.trim();
+    const artists = trackElement.querySelector('.trackItem__username')?.textContent?.trim() ?? '';
+    const name = trackElement.querySelector('.trackItem__trackTitle')?.textContent?.trim();
     if (name) {
       tracks.push({ name, artists });
     }
