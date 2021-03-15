@@ -7,7 +7,6 @@ import Header from "./Components/Header/Header";
 
 import './App.css';
 import { ConversionType } from "./types";
-import { tryGetConversionTypeFromUrl } from "./Helpers/conversion";
 
 const App = () => {
   const [conversionType, setConversionType] = useState<ConversionType | undefined>(undefined);
@@ -19,7 +18,6 @@ const App = () => {
         return;
       }
       const parsedUrl = new URLParse(currentTab.url);
-      console.log(tryGetConversionTypeFromUrl(parsedUrl))
       setConversionType(tryGetConversionTypeFromUrl(parsedUrl));
     }); 
   }, []);
@@ -39,3 +37,24 @@ const App = () => {
 };
 
 export default App;
+
+function tryGetConversionTypeFromUrl(url: URLParse): ConversionType | undefined {
+  const { hostname, pathname } = url;
+
+  if (!hostname.includes('soundcloud.com')) {
+    return;
+  }
+
+  const pathParameters = pathname.split('/');
+  const primaryParameter = pathParameters[2];
+
+  if (pathParameters.length > 3 && primaryParameter === 'sets') {
+    return 'playlist';
+  }
+
+  if (primaryParameter === 'likes') {
+    return 'likes';
+  }
+
+  return;
+}

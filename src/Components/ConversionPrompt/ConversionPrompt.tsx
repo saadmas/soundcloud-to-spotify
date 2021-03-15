@@ -1,7 +1,6 @@
 import Button from '@material-ui/core/Button/Button';
 import { withStyles } from '@material-ui/core/styles';
 import * as React from 'react';
-import { getConversionPromptText } from '../../Helpers/conversion';
 import { ConversionType } from '../../types';
 
 interface ConversionPromptProps {
@@ -51,3 +50,12 @@ const ConversionPrompt = ({ onConvertClick, conversionType }: ConversionPromptPr
 };
 
 export default ConversionPrompt;
+
+function getConversionPromptText(conversionType: ConversionType): string {
+  switch (conversionType) {
+    case 'playlist':
+      return 'Convert to Spotify playlist';
+    default:
+      return ''
+  }
+}
