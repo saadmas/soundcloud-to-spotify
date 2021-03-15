@@ -37,21 +37,21 @@ function getPlaylistTracks(): Track[] {
     return tracks;
   }
 
+  const uploadedBy = getArtistNameFromPlaylistHeader();
   const trackElementsArray = Array.from(trackElements);
+
   for (const trackElement of trackElementsArray) {
-    const artists = trackElement.querySelector('.trackItem__username')?.textContent?.trim() ?? getArtistNameFromUrl();
+    const artist = trackElement.querySelector('.trackItem__username')?.textContent?.trim() ?? '';
     const name = trackElement.querySelector('.trackItem__trackTitle')?.textContent?.trim();
     if (name) {
-      tracks.push({ name, artists });
+      tracks.push({ name, artist, uploadedBy });
     }
   }
 
   return tracks;
 }
 
-function getArtistNameFromUrl(): string {
-  const { pathname } = new URLParse(window.location.href);
-  const pathParameters = pathname.split('/');
-  const artistName = pathParameters[1] ?? '';
-  return artistName;
+function getArtistNameFromPlaylistHeader(): string {
+  const artistNameFromPlaylistHeader = document.querySelector('.soundTitle__usernameHeroContainer')?.textContent?.trim();
+  return artistNameFromPlaylistHeader ?? '';
 }

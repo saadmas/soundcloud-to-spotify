@@ -2,7 +2,8 @@ export type ConversionType = 'playlist' | 'likes';
 
 export interface Track {
   name: string;
-  artists: string;
+  artist: string;
+  uploadedBy: string;
 }
 
 interface GetPlaylistMessage {
