@@ -7,7 +7,8 @@ import './Converter.css';
 import Loader from '../Loader/Loader';
 import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
 import { withStyles } from '@material-ui/core/styles';
-import { getSpotifyTrackIds, LOGIN_FAIL_ERROR } from './utils';
+import { getSpotifyTrackIds, LOGIN_FAIL_ERROR } from './utils/track';
+import SpotifyWebApi from 'spotify-web-api-js';
 
 interface ConverterProps {
   conversionType: ConversionType;
@@ -66,9 +67,11 @@ const Converter = ({ conversionType }: ConverterProps) => {
   const onResponseFromContentScript = async (response: Message, authToken: string) => {
     console.log('response'); //*
     console.log(response);
+    const spotifyApi = new SpotifyWebApi();
+    spotifyApi.setAccessToken(authToken);
     switch (response.type) {
       case 'CONVERT PLAYLIST':
-        const { spotifyTrackIds, missingTracks, hasError } = await getSpotifyTrackIds([response.tracks[0]], authToken); /// revert to full arr
+        // const { spotifyTrackIds, missingTracks, hasError } = await getSpotifyTrackIds([response.tracks[0]], spotifyApi); /// revert to full arr
         break;
     }
   };

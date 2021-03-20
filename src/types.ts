@@ -1,9 +1,16 @@
+import SpotifyWebApi from "spotify-web-api-js";
+
 export type ConversionType = 'playlist' | 'likes';
+export type SpotifyApiType = SpotifyWebApi.SpotifyWebApiJs;
 
 export interface Track {
   name: string;
   artist: string;
   uploadedBy: string;
+}
+
+export interface ApiResult {
+  hasError?: boolean;
 }
 
 interface GetPlaylistMessage {

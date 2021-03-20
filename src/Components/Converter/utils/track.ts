@@ -1,25 +1,22 @@
-import SpotifyWebApi from 'spotify-web-api-js';
-import { Track } from "../../types";
+import { ApiResult, SpotifyApiType, Track } from "../../../types";
 
-type SpotifyApi = SpotifyWebApi.SpotifyWebApiJs;
 type SpotifySearchType = 'TRACK - ARTIST' | 'TRACK - UPLOADED BY' | 'TRACK';
 
-interface SpotifyTrackSearchResult {
+interface SpotifyTrackSearchResult extends ApiResult {
   spotifyTrackIds: string[];
   missingTracks: Track[];
-  hasError?: boolean;
 }
 
 export const LOGIN_FAIL_ERROR = 'An error occurred while connecting to your Spotify account. Please try again.'
 export const CONVERT_PLAYLIST_ERROR = 'An error while creating the Spotify playlist. Please try again.'
 
-export async function getSpotifyTrackIds(tracks: Track[], accessToken: string): Promise<SpotifyTrackSearchResult> {
+export async function getSpotifyTrackIds(
+  tracks: Track[],
+  spotifyApi: SpotifyApiType
+): Promise<SpotifyTrackSearchResult> {
   const spotifyTrackIds: string[] = [];
   const missingTracks: Track[] = [];
   let hasError = false;
-
-  const spotifyApi = new SpotifyWebApi();
-  spotifyApi.setAccessToken(accessToken);
   
   try {
     for (const track of tracks) {
@@ -40,7 +37,7 @@ export async function getSpotifyTrackIds(tracks: Track[], accessToken: string): 
   return { spotifyTrackIds, missingTracks, hasError };
 }
 
-async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApi): Promise<string | undefined> {
+async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Promise<string | undefined> {
   const searchOptions = { market: 'from_token', limit: 1 };
 
   const searchTypes: SpotifySearchType[] = ['TRACK - UPLOADED BY', 'TRACK'];
@@ -118,7 +115,6 @@ function getCleanedTrack(track: Track, removeBrackets?: boolean): Track {
 
 function getSpotifySearchQuery(track: Track, searchType: SpotifySearchType): string {
   const { name, artist, uploadedBy } = track;
-
   switch (searchType) {
     case 'TRACK':
       return name;
@@ -128,9 +124,4 @@ function getSpotifySearchQuery(track: Track, searchType: SpotifySearchType): str
     default:
       return `${name} artist:${artist}`;
   }
-
-}
-
-function getSpotifySearchEncodedText(query: string): string {
-  return query.replace(' ', '+');
 }
