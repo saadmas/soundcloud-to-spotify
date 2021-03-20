@@ -1,42 +1,24 @@
 import { ApiResult, SpotifyApiType } from "../../../types";
 
-interface SpotifyPlaylistResult extends ApiResult {
-  doesPlaylistExist: boolean;
-}
-
-async function doesSpotifyPlaylistExist(playlistName: string, spotifyApi: SpotifyApiType): Promise<SpotifyPlaylistResult> {
+export async function addTracksToPlaylist(
+  trackIds: string[],
+  playlistName: string,
+  spotifyApi: SpotifyApiType
+): Promise<ApiResult> {
   let hasError = false;
-  let doesPlaylistExist = true;
-  let offset = 0;
-  let hasNextPage = false;
 
   try {
-    do {
-      const playlistsResult = await getSpotifyPlaylists(spotifyApi, offset);
-      const { items, next } = playlistsResult;
-      hasNextPage = !!next;
-      doesPlaylistExist = items.some(item => item.name === playlistName);
-      offset += 50;
-    } while (hasNextPage && !doesPlaylistExist);
-  }
-  catch {
+    const playlistId = await createSpotifyPlaylist(playlistName, spotifyApi);
+    await spotifyApi.addTracksToPlaylist(playlistId, trackIds);
+  } catch {
     hasError = true;
   }
 
-  return { hasError, doesPlaylistExist };
+  return { hasError };
 }
 
-export async function addTracksToPlaylist(trackIds: string[], playlistName: string) {
-
-}
-
-async function createPlaylist(playlistName: string) {
-  
-}
-
-
-async function getSpotifyPlaylists(spotifyApi: SpotifyApiType, offset: number) {
-  const limit = 50;
-  const playlists = await spotifyApi.getUserPlaylists(undefined, { limit, offset });
-  return playlists;
+async function createSpotifyPlaylist(name: string, spotifyApi: SpotifyApiType): Promise<string> {
+  const { id: userId } = await spotifyApi.getMe();
+  const { id: playlistId } = await spotifyApi.createPlaylist(userId, { name, public: false });
+  return playlistId;
 }
