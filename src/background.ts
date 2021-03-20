@@ -29,7 +29,8 @@ function getSpotifyAuthUrl(state: string): string {
   const scope = encodeURIComponent([
     'user-read-email',
     'playlist-modify-private',
-    'user-library-modify'
+    'user-library-modify',
+    'user-read-private'
   ].join(' '));
 
   const baseUrl = 'https://accounts.spotify.com/authorize';

@@ -1,4 +1,3 @@
-import * as URLParse from "url-parse";
 import { Message, Track } from "./types";
 
 chrome.runtime.onMessage.addListener(chromeMessageHandler);
@@ -8,6 +7,8 @@ function chromeMessageHandler(
   _: chrome.runtime.MessageSender,
   sendResponse: (response?: Message) => void
 ) {
+  console.log('message handler in content.ts')
+  console.log(message)
   switch (message.type) {
     case 'GET PLAYLIST':
       sendResponse({
@@ -48,6 +49,8 @@ function getPlaylistTracks(): Track[] {
     }
   }
 
+  console.log('tracks')
+  console.log(tracks)//*
   return tracks;
 }
 

@@ -7,8 +7,7 @@ import './Converter.css';
 import Loader from '../Loader/Loader';
 import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
 import { withStyles } from '@material-ui/core/styles';
-
-const LOGIN_FAIL_ERROR = 'There was an error connecting to your Spotify account. Please try again.'
+import { getSpotifyTrackIds, LOGIN_FAIL_ERROR } from './utils';
 
 interface ConverterProps {
   conversionType: ConversionType;
@@ -40,9 +39,10 @@ const Converter = ({ conversionType }: ConverterProps) => {
   };
 
   const getConversionMessage = (): Message => {
+    console.log('conversionType') //*
+    console.log(conversionType) 
     switch (conversionType) {
       case 'playlist':
-        return { type: 'GET PLAYLIST' };
       default:
         return { type: 'GET PLAYLIST' };
     }
@@ -55,10 +55,22 @@ const Converter = ({ conversionType }: ConverterProps) => {
       if (currentTabId === undefined) {
         return;
       }
-      chrome.tabs.sendMessage(currentTabId, getConversionMessage(), (response) => {
-        console.log(response);
-      });
+      chrome.tabs.sendMessage(
+        currentTabId,
+        getConversionMessage(),
+        (response) => onResponseFromContentScript(response, authToken)
+      );
     });
+  };
+
+  const onResponseFromContentScript = async (response: Message, authToken: string) => {
+    console.log('response'); //*
+    console.log(response);
+    switch (response.type) {
+      case 'CONVERT PLAYLIST':
+        const { spotifyTrackIds, missingTracks, hasError } = await getSpotifyTrackIds([response.tracks[0]], authToken); /// revert to full arr
+        break;
+    }
   };
 
   const onConvertClick = () => {
