@@ -63,6 +63,9 @@ function getArtistNameFromPlaylistHeader(): string {
 }
 
 async function scrollToEndOfPlaylist() {
+  const loginMessage: Message = { type: 'LOGIN' };
+  chrome.runtime.sendMessage(loginMessage); ///
+
   while (!document.querySelector('.paging-eof')) {
     window.scrollTo(0, document.body.scrollHeight);
     await new Promise(r => setTimeout(r, 500));

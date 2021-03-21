@@ -10,6 +10,7 @@ import SpotifyWebApi from 'spotify-web-api-js';
 import { addTracksToPlaylist } from './utils/playlist';
 import ConversionResult, { ConversionResultState } from '../ConversionResult/ConversionResult';
 import ErrorBar from '../ErrorBar/ErrorBar';
+import useChromeMessageListener from '../../Hooks/useChromeMessageListener';
 
 interface ConverterProps {
   conversionType: ConversionType;
@@ -23,6 +24,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
     missingTracks: [],
     conversionOutcome: 'pending'
   });
+  const chromeMessage = useChromeMessageListener();
 
   useEffect(() => {
     if (errorMessage) {
