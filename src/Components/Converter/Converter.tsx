@@ -7,8 +7,10 @@ import './Converter.css';
 import Loader from '../Loader/Loader';
 import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
 import { withStyles } from '@material-ui/core/styles';
-import { getSpotifyTrackIds, LOGIN_FAIL_ERROR } from './utils/track';
+import { CONVERT_PLAYLIST_ERROR, getSpotifyTrackIds, LOGIN_FAIL_ERROR } from './utils/track';
 import SpotifyWebApi from 'spotify-web-api-js';
+import { addTracksToPlaylist } from './utils/playlist';
+import ConversionResult, { ConversionResultState } from '../ConversionResult/ConversionResult';
 
 interface ConverterProps {
   conversionType: ConversionType;
@@ -18,6 +20,10 @@ const Converter = ({ conversionType }: ConverterProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [spotifyToken, setSpotifyToken] = useState<string>('');
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [conversionResultState, setConversionResultState] = useState<ConversionResultState>({
+    missingTracks: [],
+    conversionOutcome: 'pending'
+  });
 
   const onSpotifyConnect = (message: Message) => {
     const { type } = message;
@@ -71,18 +77,59 @@ const Converter = ({ conversionType }: ConverterProps) => {
     spotifyApi.setAccessToken(authToken);
     switch (response.type) {
       case 'CONVERT PLAYLIST':
-        // const { spotifyTrackIds, missingTracks, hasError } = await getSpotifyTrackIds([response.tracks[0]], spotifyApi); /// revert to full arr
+        const { tracks, name } = response;
+
+        const { spotifyTrackIds, missingTracks, hasError: hasSearchError } = await getSpotifyTrackIds(tracks, spotifyApi);
+        console.log('GOT TRACK IDS!!!')
+        console.log(spotifyTrackIds)
+        console.log('missing tracks')
+        console.log(missingTracks)
+        if (hasSearchError) {
+          handlePlaylistConvertError();
+          break;
+        }
+
+        const areAllTracksMissing = tracks.length === missingTracks.length;
+        if (areAllTracksMissing) {
+          setConversionResultState({
+            missingTracks,
+            conversionOutcome: 'fail'
+          });
+          break;
+        }
+
+        const { hasError: hasAddToPlaylistError } = await addTracksToPlaylist(spotifyTrackIds, name, spotifyApi);
+        if (hasAddToPlaylistError) {
+          handlePlaylistConvertError();
+          break;
+        }
+
+        setConversionResultState({
+          missingTracks,
+          conversionOutcome: getPlaylistConversionOutcome(tracks.length, missingTracks.length)
+        });
         break;
     }
+    setLoading(false);
+  };
+
+  const getPlaylistConversionOutcome = (trackCount: number, missingTrackCount: number) => {
+    return trackCount === missingTrackCount ? 'fail' : 'success';
+  };
+
+  const handlePlaylistConvertError = () => {
+    setErrorMessage(CONVERT_PLAYLIST_ERROR);
   };
 
   const onConvertClick = () => {
     setLoading(true);
+    
     if (!spotifyToken) {
       const loginMessage: Message = { type: 'LOGIN' };
       chrome.runtime.sendMessage(loginMessage, onSpotifyConnect);
       return;
     }
+    
     convertToSpotify();
   };
 
@@ -91,12 +138,27 @@ const Converter = ({ conversionType }: ConverterProps) => {
     if (isLoading) {
       return <Loader />;
     }
+
+    const { conversionOutcome } = conversionResultState;
+    if (conversionOutcome !== 'pending') {
+      return (
+        <ConversionResult
+          conversionResult={conversionResultState}
+          conversionType={conversionType}
+        />
+      );
+    }
+    
     return (
       <ConversionPrompt
         onConvertClick={onConvertClick}
         conversionType={conversionType}
       />
     );
+  };
+
+  const onErrorDismiss = () => {
+    setErrorMessage('');
   };
 
   const renderErrorBar = () => {
@@ -106,7 +168,12 @@ const Converter = ({ conversionType }: ConverterProps) => {
 
     const Alert = withStyles({
       root: {
-        fontSize: 12
+        fontSize: 12,
+        position: 'absolute',
+        top: '0',
+        paddingLeft: '50px',
+        height: '30px',
+        width: '440px'
       },
     })(MuiAlert);
 
@@ -115,6 +182,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
         severity="error"
         elevation={6}
         variant="filled"
+        onClose={onErrorDismiss}
       >
         {errorMessage}
       </Alert>

@@ -1,12 +1,12 @@
 .app {
   width: 500px;
   min-height: 100px;
-  background: #282828;
   color: #fff;
 }
 
 body {
   margin: 0;
+  background: #282828;
 }
 
 .openSoundCloud {

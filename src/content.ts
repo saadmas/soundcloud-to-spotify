@@ -38,6 +38,8 @@ function getPlaylistTracks(): Track[] {
     return tracks;
   }
 
+  scrollToEndOfPlaylist();
+
   const uploadedBy = getArtistNameFromPlaylistHeader();
   const trackElementsArray = Array.from(trackElements);
 
@@ -57,4 +59,10 @@ function getPlaylistTracks(): Track[] {
 function getArtistNameFromPlaylistHeader(): string {
   const artistNameFromPlaylistHeader = document.querySelector('.soundTitle__usernameHeroContainer')?.textContent?.trim();
   return artistNameFromPlaylistHeader ?? '';
+}
+
+function scrollToEndOfPlaylist() {
+  while (!document.querySelector('.paging-eof')) {
+    window.scrollTo(0, document.body.scrollHeight);
+  }
 }

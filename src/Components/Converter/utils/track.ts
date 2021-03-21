@@ -8,7 +8,7 @@ interface SpotifyTrackSearchResult extends ApiResult {
 }
 
 export const LOGIN_FAIL_ERROR = 'An error occurred while connecting to your Spotify account. Please try again.'
-export const CONVERT_PLAYLIST_ERROR = 'An error while creating the Spotify playlist. Please try again.'
+export const CONVERT_PLAYLIST_ERROR = 'An error while creating your Spotify playlist. Please try again.'
 
 export async function getSpotifyTrackIds(
   tracks: Track[],
@@ -48,9 +48,9 @@ async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Prom
   for (const searchType of searchTypes) {
     const searchQuery = getSpotifySearchQuery(track, searchType);
     const searchResult = await spotifyApi.searchTracks(searchQuery, searchOptions);
-    console.log(searchResult); //*
     if (searchResult.tracks.items.length) {
-      return searchResult.tracks.items[0].id;
+      console.log(searchResult.tracks.items[0]); //*
+      return searchResult.tracks.items[0].uri;
     }
   }
 
@@ -58,9 +58,9 @@ async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Prom
   for (const searchType of searchTypes) {
     const searchQuery = getSpotifySearchQuery(cleanedTrack, searchType);
     const searchResult = await spotifyApi.searchTracks(searchQuery, searchOptions);
-    console.log(searchResult); //*
     if (searchResult.tracks.items.length) {
-      return searchResult.tracks.items[0].id;
+      console.log(searchResult.tracks.items[0]); //*
+      return searchResult.tracks.items[0].uri;
     }
   }
 
@@ -68,9 +68,9 @@ async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Prom
   for (const searchType of searchTypes) {
     const searchQuery = getSpotifySearchQuery(cleanedTrack, searchType);
     const searchResult = await spotifyApi.searchTracks(searchQuery, searchOptions);
-    console.log(searchResult); //*
     if (searchResult.tracks.items.length) {
-      return searchResult.tracks.items[0].id;
+      console.log(searchResult.tracks.items[0]); //*
+      return searchResult.tracks.items[0].uri;
     }
   }
   
