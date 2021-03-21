@@ -11,11 +11,14 @@ function chromeMessageHandler(
   console.log(message)
   switch (message.type) {
     case 'GET PLAYLIST':
-      sendResponse({
-        type: 'CONVERT PLAYLIST',
-        name: getPlaylistName(),
-        tracks: getPlaylistTracks()
-      });
+      (async () => {
+        await scrollToEndOfPlaylist();
+        sendResponse({
+          type: 'CONVERT PLAYLIST',
+          name: getPlaylistName(),
+          tracks: getPlaylistTracks()
+        });
+      })();
       break;
     default:
       break;
@@ -38,8 +41,6 @@ function getPlaylistTracks(): Track[] {
     return tracks;
   }
 
-  // scrollToEndOfPlaylist(); ///
-
   const uploadedBy = getArtistNameFromPlaylistHeader();
   const trackElementsArray = Array.from(trackElements);
 
@@ -61,9 +62,9 @@ function getArtistNameFromPlaylistHeader(): string {
   return artistNameFromPlaylistHeader ?? '';
 }
 
-function scrollToEndOfPlaylist() {
+async function scrollToEndOfPlaylist() {
   while (!document.querySelector('.paging-eof')) {
-    console.log('scrolling...')
     window.scrollTo(0, document.body.scrollHeight);
+    await new Promise(r => setTimeout(r, 500));
   }
 }

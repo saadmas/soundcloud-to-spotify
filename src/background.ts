@@ -38,7 +38,6 @@ function getSpotifyAuthUrl(state: string): string {
     `client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirecUri}&state=${state}&scope=${scope}`;
 
   const spotifyAuthUrl = `${baseUrl}?${queryString}`;
-  console.log(spotifyAuthUrl)
   return spotifyAuthUrl;
 }
 

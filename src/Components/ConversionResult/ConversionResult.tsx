@@ -94,7 +94,6 @@ const ConversionResult = ({ conversionResult, conversionType }: ConversionResult
   };
 
   const renderConversionResult = () => {
-    return renderConversionFail();
     switch (conversionOutcome) {
       case 'pending':
         return null;
