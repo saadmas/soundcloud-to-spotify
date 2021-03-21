@@ -38,7 +38,7 @@ function getPlaylistTracks(): Track[] {
     return tracks;
   }
 
-  scrollToEndOfPlaylist();
+  // scrollToEndOfPlaylist(); ///
 
   const uploadedBy = getArtistNameFromPlaylistHeader();
   const trackElementsArray = Array.from(trackElements);
@@ -63,6 +63,7 @@ function getArtistNameFromPlaylistHeader(): string {
 
 function scrollToEndOfPlaylist() {
   while (!document.querySelector('.paging-eof')) {
+    console.log('scrolling...')
     window.scrollTo(0, document.body.scrollHeight);
   }
 }
