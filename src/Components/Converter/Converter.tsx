@@ -1,16 +1,15 @@
 import * as React from 'react';
-const { useState } = React;
-import MuiAlert from '@material-ui/lab/Alert';
+const { useState, useEffect } = React;
 
 import { ConversionType, Message } from '../../types';
 import './Converter.css';
 import Loader from '../Loader/Loader';
 import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
-import { withStyles } from '@material-ui/core/styles';
 import { CONVERT_PLAYLIST_ERROR, getSpotifyTrackIds, LOGIN_FAIL_ERROR } from './utils/track';
 import SpotifyWebApi from 'spotify-web-api-js';
 import { addTracksToPlaylist } from './utils/playlist';
 import ConversionResult, { ConversionResultState } from '../ConversionResult/ConversionResult';
+import ErrorBar from '../ErrorBar/ErrorBar';
 
 interface ConverterProps {
   conversionType: ConversionType;
@@ -24,6 +23,12 @@ const Converter = ({ conversionType }: ConverterProps) => {
     missingTracks: [],
     conversionOutcome: 'pending'
   });
+
+  useEffect(() => {
+    if (errorMessage) {
+      setLoading(false);
+    }
+  }, [errorMessage]);
 
   const onSpotifyConnect = (message: Message) => {
     const { type } = message;
@@ -160,39 +165,14 @@ const Converter = ({ conversionType }: ConverterProps) => {
   const onErrorDismiss = () => {
     setErrorMessage('');
   };
-
-  const renderErrorBar = () => {
-    if (!errorMessage) {
-      return null;
-    }
-
-    const Alert = withStyles({
-      root: {
-        fontSize: 12,
-        position: 'absolute',
-        top: '0',
-        paddingLeft: '50px',
-        height: '30px',
-        width: '440px'
-      },
-    })(MuiAlert);
-
-    return (
-      <Alert
-        severity="error"
-        elevation={6}
-        variant="filled"
-        onClose={onErrorDismiss}
-      >
-        {errorMessage}
-      </Alert>
-    );
-  };
   
 
   return (
     <div className="converter">
-      {renderErrorBar()}
+      <ErrorBar
+        errorMessage={errorMessage}
+        onErrorDismiss={onErrorDismiss}
+      />
       {renderConverterContent()}
     </div>
   );
