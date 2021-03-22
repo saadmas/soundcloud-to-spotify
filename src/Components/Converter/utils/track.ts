@@ -64,7 +64,7 @@ async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Prom
     }
   }
 
-  cleanedTrack = getCleanedTrack(track, true);
+  cleanedTrack = getCleanedTrack(track, true, true);
   for (const searchType of searchTypes) {
     const searchQuery = getSpotifySearchQuery(cleanedTrack, searchType);
     const searchResult = await spotifyApi.searchTracks(searchQuery, searchOptions);
@@ -78,7 +78,7 @@ async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Prom
   return;
 }
 
-function getRegexTrackNameFilter(removeBrackets?: boolean) {
+function getRegexTrackNameFilter(removeBrackets?: boolean, removeColonAppendedText?: boolean) {
   const leadMatcher = '[\\.]*';
   const prefixMatcher = '\\W';
 
@@ -102,11 +102,16 @@ function getRegexTrackNameFilter(removeBrackets?: boolean) {
     filter = `${filter}|${squareBracketFilter}|${roundBracketFilter}`;
   }
 
+  if (removeColonAppendedText) {
+    const colonAppendedTextFilter = '\.*:';
+    filter = `${filter}|${colonAppendedTextFilter}`;
+  }
+
   return new RegExp(filter, 'ig');
 }
 
-function getCleanedTrack(track: Track, removeBrackets?: boolean): Track {
-  const filter = getRegexTrackNameFilter(removeBrackets);
+function getCleanedTrack(track: Track, removeBrackets?: boolean, removeColonAppendedText?: boolean): Track {
+  const filter = getRegexTrackNameFilter(removeBrackets, removeColonAppendedText);
   return {
     ...track,
     name: track.name.replace(filter, '')
