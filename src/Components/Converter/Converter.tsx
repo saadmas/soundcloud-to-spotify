@@ -17,6 +17,7 @@ interface ConverterProps {
 
 const Converter = ({ conversionType }: ConverterProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [loadingMessage, setLoadingMessage] = useState<string>('');
   const [spotifyToken, setSpotifyToken] = useState<string>('');
   const [isLoading, setLoading] = useState<boolean>(false);
   const [conversionResultState, setConversionResultState] = useState<ConversionResultState>({
@@ -27,6 +28,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
   useEffect(() => {
     if (errorMessage) {
       setLoading(false);
+      setLoadingMessage('');
     }
   }, [errorMessage]);
 
@@ -67,6 +69,11 @@ const Converter = ({ conversionType }: ConverterProps) => {
       if (currentTabId === undefined) {
         return;
       }
+
+      if (conversionType === 'playlist') {
+        setLoadingMessage('Collecting all tracks in the SoundCloud playlist')
+      }
+
       chrome.tabs.sendMessage(
         currentTabId,
         getConversionMessage(),
@@ -82,6 +89,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
     spotifyApi.setAccessToken(authToken);
     switch (response.type) {
       case 'CONVERT PLAYLIST':
+        setLoadingMessage('Adding tracks to Spotify playlist');
         const { tracks, name } = response;
 
         const { spotifyTrackIds, missingTracks, hasError: hasSearchError } = await getSpotifyTrackIds(tracks, spotifyApi);
@@ -116,6 +124,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
         break;
     }
     setLoading(false);
+    setLoadingMessage('');
   };
 
   const getPlaylistConversionOutcome = (trackCount: number, missingTrackCount: number) => {
@@ -141,7 +150,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
   
   const renderConverterContent = () => {
     if (isLoading) {
-      return <Loader />;
+      return <Loader loadingMessage={loadingMessage}/>;
     }
 
     const { conversionOutcome } = conversionResultState;

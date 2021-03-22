@@ -1,5 +1,12 @@
 .loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.loadingMessage {
+  font-size: 12px;
+  margin-top: 5px;
 }
 
 .lds-ripple {
