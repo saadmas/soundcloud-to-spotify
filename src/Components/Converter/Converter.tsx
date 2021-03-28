@@ -181,6 +181,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
       <ErrorBar
         errorMessage={errorMessage}
         onErrorDismiss={onErrorDismiss}
+        styles={{ marginBottom: '10px', width: '98%' }}
       />
       {renderConverterContent()}
     </div>

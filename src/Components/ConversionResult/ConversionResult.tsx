@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { render } from 'react-dom';
 import { ConversionType, Track } from '../../types';
+import ErrorBar from '../ErrorBar/ErrorBar';
 import SuccessBar from '../SuccessBar/SuccessBar';
 
 import './ConversionResult.css';
@@ -41,13 +41,12 @@ const ConversionResult = ({ conversionResult, conversionType }: ConversionResult
       </li>
     ));
 
+    const errorMessage = `However, the following tracks were not found on Spotify.\ 
+    This might be because they are labelled differently on Spotify and SoundCloud.\
+    You could try searching for these tracks directly in the Spotify app.`;
     return (
       <div className="missingTracksResult">
-        <div>
-          However, the following tracks were not found on Spotify. 
-          This might be because they are labelled differently on Spotify and SoundCloud.
-          You could try searching for these tracks directly in the Spotify app.
-        </div>
+        <ErrorBar errorMessage={errorMessage} />
         <ul className="missingTracksList">
           {missingTrackElements}
         </ul>
