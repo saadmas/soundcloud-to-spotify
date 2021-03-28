@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { ConversionType, Track } from '../../types';
+import SuccessBar from '../SuccessBar/SuccessBar';
 
 import './ConversionResult.css';
 
@@ -57,9 +58,9 @@ const ConversionResult = ({ conversionResult, conversionType }: ConversionResult
   const renderResultForPlaylistConversion = () => {
     return (
       <div className="conversionResult">
-        <div> 
-          Succesfully converted your Spotify playlist!  Check it out in the Spotify app.
-        </div>
+        <SuccessBar
+          successMessage={'Succesfully converted your Spotify playlist!  Check it out in the Spotify app.'}
+        /> 
         {renderMissingTracksResult()}
       </div>
     );
