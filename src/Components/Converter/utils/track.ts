@@ -17,29 +17,30 @@ export async function getSpotifyTrackIds(
   const spotifyTrackIds: string[] = [];
   const missingTracks: Track[] = [];
   let hasError = false;
-  
+  let index = -1;
   try {
-    tracks.forEach(async (track, index) => {
+    for (const track of tracks) {
+      index++;
+
       const trackId = await getSpotifyTrackId(track, spotifyApi);
-  
-      if (trackId === undefined) {
-        missingTracks.push(track);
-        return;
-      }
-  
-      spotifyTrackIds.push(trackId);
-      
-      const shouldWaitToAvoidApiRateLimit =( index !== 0) && (index % 150 === 0);
+
+      const shouldWaitToAvoidApiRateLimit = (index !== 0) && (index % 150 === 0);
       if (shouldWaitToAvoidApiRateLimit) {
         await new Promise(r => setTimeout(r, 500));
       }
-    });
-  }
-  catch {
-    hasError = true;
-  }
 
-  return { spotifyTrackIds, missingTracks, hasError };
+      if (trackId === undefined) {
+        missingTracks.push(track);
+        continue;
+      }
+  
+      spotifyTrackIds.push(trackId);
+    };
+  } catch {
+    hasError = true;
+  } finally {
+    return { spotifyTrackIds, missingTracks, hasError };
+  }
 }
 
 async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Promise<string | undefined> {
