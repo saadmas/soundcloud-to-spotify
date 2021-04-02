@@ -7,8 +7,6 @@ function chromeMessageHandler(
   _: chrome.runtime.MessageSender,
   sendResponse: (response?: Message) => void
 ) {
-  console.log('message handler in content.ts')
-  console.log(message)
   switch (message.type) {
     case 'GET PLAYLIST':
       (async () => {
@@ -52,8 +50,6 @@ function getPlaylistTracks(): Track[] {
     }
   }
 
-  console.log('tracks')
-  console.log(tracks)//*
   return tracks;
 }
 

@@ -2,7 +2,7 @@ import { ApiResult, SpotifyApiType, Track } from "../../../types";
 
 type SpotifySearchType = 'TRACK - ARTIST' | 'TRACK - UPLOADED BY' | 'TRACK';
 
-interface SpotifyTrackSearchResult extends ApiResult {
+export interface SpotifyTrackSearchResult extends ApiResult {
   spotifyTrackIds: string[];
   missingTracks: Track[];
 }
@@ -10,43 +10,8 @@ interface SpotifyTrackSearchResult extends ApiResult {
 export const LOGIN_FAIL_ERROR = 'An error occurred while connecting to your Spotify account. Please try again.'
 export const CONVERT_PLAYLIST_ERROR = 'An error while creating your Spotify playlist. Please try again.'
 
-export async function getSpotifyTrackIds(
-  tracks: Track[],
-  spotifyApi: SpotifyApiType
-): Promise<SpotifyTrackSearchResult> {
-  const spotifyTrackIds: string[] = [];
-  const missingTracks: Track[] = [];
-  let hasError = false;
-  let index = -1;
 
-  while (index < tracks.length) {
-    try {
-      index++;
-      const track = tracks[index];
-      const trackId = await getSpotifyTrackId(track, spotifyApi);
-
-      if (trackId === undefined) {
-        missingTracks.push(track);
-        continue;
-      }
-
-      spotifyTrackIds.push(trackId);
-    } catch (e) {
-      const retryAfter = 'getResponseHeader' in e ? +e?.getResponseHeader('retry-after') : NaN;
-      if (!Number.isNaN(retryAfter)) {
-        index--;
-        await new Promise(r => setTimeout(r, retryAfter + 1));
-      } else {
-        console.log(e);
-        hasError = true;
-      }
-    }
-  }
-
-  return { spotifyTrackIds, missingTracks, hasError };
-}
-
-async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Promise<string | undefined> {
+export async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Promise<string | undefined> {
   const searchOptions = { market: 'from_token', limit: 1 };
 
   const searchTypes: SpotifySearchType[] = ['TRACK - UPLOADED BY', 'TRACK'];

@@ -9,6 +9,15 @@
   margin-top: 5px;
 }
 
+.loadingProgress {
+  align-items: center;
+  display: flex;
+}
+
+.loadingPercent {
+ margin-left: 10px;
+}
+
 .lds-ripple {
   display: inline-block;
   position: relative;

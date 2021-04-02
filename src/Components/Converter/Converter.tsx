@@ -1,15 +1,16 @@
 import * as React from 'react';
 const { useState, useEffect } = React;
 
-import { ConversionType, Message } from '../../types';
+import { ConversionType, Message, SpotifyApiType, Track } from '../../types';
 import './Converter.css';
 import Loader from '../Loader/Loader';
 import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
-import { CONVERT_PLAYLIST_ERROR, getSpotifyTrackIds, LOGIN_FAIL_ERROR } from './utils/track';
+import { CONVERT_PLAYLIST_ERROR, getSpotifyTrackId, LOGIN_FAIL_ERROR, SpotifyTrackSearchResult } from './utils/track';
 import SpotifyWebApi from 'spotify-web-api-js';
 import { addTracksToPlaylist } from './utils/playlist';
 import ConversionResult, { ConversionResultState } from '../ConversionResult/ConversionResult';
 import ErrorBar from '../ErrorBar/ErrorBar';
+import { tryGetRetryAfter } from './utils/networkRequest';
 
 interface ConverterProps {
   conversionType: ConversionType;
@@ -18,6 +19,7 @@ interface ConverterProps {
 const Converter = ({ conversionType }: ConverterProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loadingMessage, setLoadingMessage] = useState<string>('');
+  const [loadingProgress, setLoadingProgress] = useState<number | undefined>(undefined);
   const [spotifyToken, setSpotifyToken] = useState<string>('');
   const [isLoading, setLoading] = useState<boolean>(false);
   const [conversionResultState, setConversionResultState] = useState<ConversionResultState>({
@@ -53,8 +55,6 @@ const Converter = ({ conversionType }: ConverterProps) => {
   };
 
   const getConversionMessage = (): Message => {
-    console.log('conversionType') //*
-    console.log(conversionType) 
     switch (conversionType) {
       case 'playlist':
       default:
@@ -83,8 +83,6 @@ const Converter = ({ conversionType }: ConverterProps) => {
   };
 
   const onResponseFromContentScript = async (response: Message, authToken: string) => {
-    console.log('response'); //*
-    console.log(response);
     const spotifyApi = new SpotifyWebApi();
     spotifyApi.setAccessToken(authToken);
     switch (response.type) {
@@ -127,6 +125,47 @@ const Converter = ({ conversionType }: ConverterProps) => {
     setLoadingMessage('');
   };
 
+  const getSpotifyTrackIds = async (
+    tracks: Track[],
+    spotifyApi: SpotifyApiType
+  ): Promise<SpotifyTrackSearchResult> => {
+    const spotifyTrackIds: string[] = [];
+    const missingTracks: Track[] = [];
+    let hasError = false;
+    let index = 0;
+  
+    while (index < tracks.length) {
+      try {
+
+        const track = tracks[index];
+        index++;
+
+        const trackId = await getSpotifyTrackId(track, spotifyApi);
+
+        const percentDone = Math.round(((index-1) / tracks.length) * 100); /// might have to change based on how long adding tracks to playlist takes
+        setLoadingProgress(percentDone);
+
+        if (trackId === undefined) {
+          missingTracks.push(track);
+          continue;
+        }
+  
+        spotifyTrackIds.push(trackId);
+      } catch (e) {
+        const retryAfter = tryGetRetryAfter(e);
+        if (!Number.isNaN(retryAfter)) {
+          index--;
+          await new Promise(r => setTimeout(r, retryAfter + 1));
+        } else {
+          console.log(e);
+          hasError = true;
+        }
+      }
+    }
+  
+    return { spotifyTrackIds, missingTracks, hasError };
+  }
+
   const getPlaylistConversionOutcome = (trackCount: number, missingTrackCount: number) => {
     return trackCount === missingTrackCount ? 'fail' : 'success';
   };
@@ -150,7 +189,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
   
   const renderConverterContent = () => {
     if (isLoading) {
-      return <Loader loadingMessage={loadingMessage}/>;
+      return <Loader loadingMessage={loadingMessage} loadingProgress={loadingProgress}/>;
     }
 
     const { conversionOutcome } = conversionResultState;
