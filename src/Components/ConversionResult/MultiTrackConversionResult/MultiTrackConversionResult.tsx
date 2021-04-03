@@ -39,12 +39,13 @@ const MultiTrackConversionResult = ({ conversionResult, conversionType }: MultiT
       </li>
     ));
 
-    const errorMessage = `However, the following tracks were not found on Spotify.\ 
-    This might be because they are labelled differently on Spotify and SoundCloud.\
-    You could try searching for these tracks directly in the Spotify app.`;
     return (
       <div className="missingTracksResult">
-        <ErrorBar errorMessage={errorMessage} />
+        <ErrorBar errorMessage={'However, the following tracks were not found on Spotify.'} />
+        <div className="extraErrorInfo">
+          This might be because they are labelled differently on Spotify and SoundCloud.
+          You could try searching for these tracks directly in the Spotify app.
+        </div>
         <ul className="missingTracksList">
           {missingTrackElements}
         </ul>
@@ -54,7 +55,7 @@ const MultiTrackConversionResult = ({ conversionResult, conversionType }: MultiT
   
   const renderResultForPlaylistConversion = () => {
     return (
-      <div className="conversionResult">
+      <div className="multiTrackConversionResult">
         <SuccessBar
           successMessage={'Succesfully converted your Spotify playlist!  Check it out in the Spotify app.'}
         /> 
@@ -84,7 +85,7 @@ const MultiTrackConversionResult = ({ conversionResult, conversionType }: MultiT
 
   const renderConversionFail = () => {
     return (
-      <div className="conversionResult">
+      <div className="multiTrackConversionResult">
         <span>Yikes! </span>
         {getConversionFailTextForConversionType()}
       </div>

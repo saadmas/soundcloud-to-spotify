@@ -1,8 +1,12 @@
-.conversionResult {
+.multiTrackConversionResult {
   padding: 20px;
   position: absolute;
   top: 0;
   font-size: 14px;
+}
+
+.extraErrorInfo {
+  margin-top: 10px;
 }
 
 .missingTracksResult {
@@ -16,7 +20,6 @@
 .missingTracksList {
   list-style-type: none;
   padding-inline-start: 0px;
-  font-style: italic;
 }
 
 li.missingTrackListItem:not(:last-child) { 
