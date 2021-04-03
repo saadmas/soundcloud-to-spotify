@@ -2,11 +2,13 @@ import * as React from "react";
 import * as URLParse from "url-parse";
 const { useState, useEffect } = React;
 
-import Converter from "./Components/Converter/Converter";
+import Converter from "./Components/Converter/MultiTrackConverter/MultiTrackConverter";
 import Header from "./Components/Header/Header";
 
 import './App.css';
 import { ConversionType } from "./types";
+import MultiTrackConverter from "./Components/Converter/MultiTrackConverter/MultiTrackConverter";
+import { tryGetConversionTypeFromUrl } from "./Components/Converter/utils/url";
 
 const App = () => {
   const [conversionType, setConversionType] = useState<ConversionType | undefined>(undefined);
@@ -23,9 +25,15 @@ const App = () => {
   }, []);
 
   const renderAppContent = (): JSX.Element => {
-    return conversionType ?
-      <Converter conversionType={conversionType}/> :
-      <div className="openSoundCloud">To use this extension, open a SoundCloud playlist, album, or your Likes.</div>;
+    switch (conversionType) {
+      case 'playlist':
+      case 'likes':
+        return <MultiTrackConverter conversionType={conversionType} />;
+      case 'track':
+        return <div>TODO: Track converter</div>;
+      default:
+        return <div className="openSoundCloud">To use this extension, open a SoundCloud playlist, album, or your Likes.</div>;
+    }
   };
 
   return (
@@ -38,23 +46,3 @@ const App = () => {
 
 export default App;
 
-function tryGetConversionTypeFromUrl(url: URLParse): ConversionType | undefined {
-  const { hostname, pathname } = url;
-
-  if (!hostname.includes('soundcloud.com')) {
-    return;
-  }
-
-  const pathParameters = pathname.split('/');
-  const primaryParameter = pathParameters[2];
-
-  if (pathParameters.length > 3 && primaryParameter === 'sets') {
-    return 'playlist';
-  }
-
-  if (primaryParameter === 'likes') {
-    return 'likes';
-  }
-
-  return;
-}

@@ -1,22 +1,23 @@
 import * as React from 'react';
 const { useState, useEffect } = React;
 
-import { ConversionType, Message, SpotifyApiType, Track } from '../../types';
-import './Converter.css';
-import Loader from '../Loader/Loader';
-import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
-import { CONVERT_PLAYLIST_ERROR, getSpotifyTrackId, LOGIN_FAIL_ERROR, SpotifyTrackSearchResult } from './utils/track';
+import { Message, SpotifyApiType, Track } from '../../../types';
+import './MultiTrackConverter.css';
+import Loader from '../../Loader/Loader';
+import ConversionPrompt from '../../ConversionPrompt/ConversionPrompt';
+import { CONVERT_PLAYLIST_ERROR, getSpotifyTrackId, LOGIN_FAIL_ERROR, SpotifyTrackSearchResult } from '../utils/track';
 import SpotifyWebApi from 'spotify-web-api-js';
-import { addTracksToPlaylist } from './utils/playlist';
-import ConversionResult, { ConversionResultState } from '../ConversionResult/ConversionResult';
-import ErrorBar from '../ErrorBar/ErrorBar';
-import { tryGetRetryAfter } from './utils/networkRequest';
+import { addTracksToPlaylist } from '../utils/playlist';
+import MultiTrackConversionResult, { ConversionResultState }
+from '../../ConversionResult/MultiTrackConversionResult/MultiTrackConversionResult';
+import ErrorBar from '../../ErrorBar/ErrorBar';
+import { tryGetRetryAfter } from '../utils/networkRequest';
 
-interface ConverterProps {
-  conversionType: ConversionType;
+interface MultiTrackConverterProps {
+  conversionType: 'playlist' | 'likes';
 }
 
-const Converter = ({ conversionType }: ConverterProps) => {
+const MultiTrackConverter = ({ conversionType }: MultiTrackConverterProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loadingMessage, setLoadingMessage] = useState<string>('');
   const [loadingProgress, setLoadingProgress] = useState<number | undefined>(undefined);
@@ -195,7 +196,7 @@ const Converter = ({ conversionType }: ConverterProps) => {
     const { conversionOutcome } = conversionResultState;
     if (conversionOutcome !== 'pending') {
       return (
-        <ConversionResult
+        <MultiTrackConversionResult
           conversionResult={conversionResultState}
           conversionType={conversionType}
         />
@@ -227,4 +228,4 @@ const Converter = ({ conversionType }: ConverterProps) => {
   );
 };
 
-export default Converter;
+export default MultiTrackConverter;
