@@ -71,8 +71,8 @@ function getRegexTrackNameFilter(removeBrackets?: boolean, removeColonAppendedTe
   if (removeBrackets) {
     // Remove anything WITHIN square brackets
     const squareBracketFilter = '\\[.+\\]';
-    // Remove round brackets, but not anything within them
-    const roundBracketFilter = '\\(|\\)';
+      // Remove anything WITHIN round brackets
+    const roundBracketFilter = '\\(.+\\)';
     filter = `${filter}|${squareBracketFilter}|${roundBracketFilter}`;
   }
 
