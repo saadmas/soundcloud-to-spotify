@@ -30,11 +30,20 @@ interface LoginMessage {
   type: 'LOGIN';
 }
 
+interface CheckTrackConversionTypeMessage {
+  type: 'CHECK TRACK CONVERSION TYPE';
+}
+
+interface TrackPageConfirmedMessage {
+  type: 'TRACK PAGE CONFIRMED';
+}
+
 interface ConvertPlaylistMessage {
   type: 'CONVERT PLAYLIST';
   name: string;
   tracks: Track[];
 }
 
-export type Message = AuthFailMessage | AuthSuccessMessage | LoginMessage | GetPlaylistMessage | ConvertPlaylistMessage;
+export type Message = AuthFailMessage | AuthSuccessMessage | LoginMessage | GetPlaylistMessage | ConvertPlaylistMessage |
+  CheckTrackConversionTypeMessage | TrackPageConfirmedMessage;
  

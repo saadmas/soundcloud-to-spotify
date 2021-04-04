@@ -55,6 +55,8 @@ function getConversionPromptText(conversionType: ConversionType): string {
   switch (conversionType) {
     case 'playlist':
       return 'Convert to Spotify playlist';
+    case 'track':
+      return 'Add to Spotify Liked Songs';
     default:
       return ''
   }

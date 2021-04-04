@@ -6,7 +6,7 @@ import Converter from "./Components/Converter/MultiTrackConverter/MultiTrackConv
 import Header from "./Components/Header/Header";
 
 import './App.css';
-import { ConversionType } from "./types";
+import { ConversionType, Message } from "./types";
 import MultiTrackConverter from "./Components/Converter/MultiTrackConverter/MultiTrackConverter";
 import { tryGetConversionTypeFromUrl } from "./Components/Converter/utils/url";
 
@@ -19,9 +19,30 @@ const App = () => {
       if (!currentTab?.url) {
         return;
       }
+
       const parsedUrl = new URLParse(currentTab.url);
-      setConversionType(tryGetConversionTypeFromUrl(parsedUrl));
-    }); 
+      const conversionTypeFromUrl = tryGetConversionTypeFromUrl(parsedUrl);
+      console.log(conversionTypeFromUrl)
+      if (conversionTypeFromUrl) {
+        setConversionType(conversionTypeFromUrl);
+        return;
+      }
+
+      if (currentTab.id === undefined) {
+        return;
+      }
+
+      const trygetTrackConversionTypeMessage: Message = { type: 'CHECK TRACK CONVERSION TYPE' };
+      chrome.tabs.sendMessage(
+        currentTab.id,
+        trygetTrackConversionTypeMessage,
+        (response) => {
+          if (response?.type === 'TRACK PAGE CONFIRMED') {
+            setConversionType('track');
+          }
+        }
+      );
+    });
   }, []);
 
   const renderAppContent = (): JSX.Element => {
@@ -32,7 +53,7 @@ const App = () => {
       case 'track':
         return <div>TODO: Track converter</div>;
       default:
-        return <div className="openSoundCloud">To use this extension, open a SoundCloud playlist, album, or your Likes.</div>;
+        return <div className="openSoundCloud">To use this extension, open a SoundCloud playlist, album, track or your Likes.</div>;
     }
   };
 

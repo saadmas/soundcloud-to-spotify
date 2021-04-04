@@ -1,6 +1,6 @@
 {
   "name": "SoundCloud to Spotify",
-  "description": "Chrome extension to transfer Soundcloud playlists and albums directly into your Spotify account",
+  "description": "Chrome extension to transfer Soundcloud playlists, albums, tracks, and Likes directly into your Spotify account",
   "manifest_version": 2,
   "version": "1.0.0",
   "icons": {

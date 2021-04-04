@@ -7,6 +7,7 @@ function chromeMessageHandler(
   _: chrome.runtime.MessageSender,
   sendResponse: (response?: Message) => void
 ) {
+  console.log(message) 
   switch (message.type) {
     case 'GET PLAYLIST':
       (async () => {
@@ -18,9 +19,28 @@ function chromeMessageHandler(
         });
       })();
       break;
+    case 'CHECK TRACK CONVERSION TYPE':
+      console.log('CHECK TRACK CONVERSION TYPE')
+      if (isCurrentlyOnSoundCloudTrackPage()) {
+        console.log('TRACK PAGE CONFIRMED')
+        sendResponse({ type: 'TRACK PAGE CONFIRMED' });
+      };
+      break;
     default:
       break;
   }
+  return true;
+}
+
+function isCurrentlyOnSoundCloudTrackPage(): boolean {
+  if (!document.querySelector('.waveformWrapper')) {
+    return false; 
+  }
+
+  if (!document.querySelector('.soundTitle__title')) {
+    return false;
+  }
+
   return true;
 }
 
@@ -32,6 +52,8 @@ function getPlaylistName(): string {
 function getPlaylistTracks(): Track[] {
   const tracks: Track[] = [];
   
+  /// https://soundcloud.com/discover/sets/personalized-tracks::saadmasood:978883699 
+  // DIFF QUERY SELECTOR FOR RELATED TRACKS
   const trackListElement = document.querySelector('.trackList__list');
   const trackElements = trackListElement?.querySelectorAll('.trackList__item');
 

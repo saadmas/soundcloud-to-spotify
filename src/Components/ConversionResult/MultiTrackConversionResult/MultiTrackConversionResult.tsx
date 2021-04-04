@@ -2,12 +2,13 @@ import * as React from 'react';
 import { Track } from '../../../types';
 import ErrorBar from '../../ErrorBar/ErrorBar';
 import SuccessBar from '../../SuccessBar/SuccessBar';
+import { ConversionOutcome } from '../ConversionResult';
 
 import './MultiTrackConversionResult.css';
 
 export interface ConversionResultState {
   missingTracks?: Track[];
-  conversionOutcome: 'pending' | 'success' | 'fail';
+  conversionOutcome: ConversionOutcome;
 }
 
 interface MultiTrackConversionResultProps {
@@ -57,7 +58,7 @@ const MultiTrackConversionResult = ({ conversionResult, conversionType }: MultiT
     return (
       <div className="multiTrackConversionResult">
         <SuccessBar
-          successMessage={'Succesfully converted your Spotify playlist!  Check it out in the Spotify app.'}
+          successMessage={'Succesfully converted your Spotify playlist! Check it out in the Spotify app.'}
         /> 
         {renderMissingTracksResult()}
       </div>
