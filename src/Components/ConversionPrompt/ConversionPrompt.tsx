@@ -33,18 +33,9 @@ const ConversionPrompt = ({ onConvertClick, conversionType }: ConversionPromptPr
     );
   };
 
-  const renderConversionPrompt = () => {
-    switch (conversionType) {
-      case 'playlist':
-        return getConvertButton();
-      default:
-        return null;
-    }
-  };
-
   return (
     <div>
-      {renderConversionPrompt()}
+      {getConvertButton()}
     </div>
   );
 };

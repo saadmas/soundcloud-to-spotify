@@ -14,7 +14,7 @@ function chromeMessageHandler(
         await scrollToEndOfPlaylist();
         sendResponse({
           type: 'CONVERT PLAYLIST',
-          name: getPlaylistName(),
+          name: getSoundTitle(),
           tracks: getPlaylistTracks()
         });
       })();
@@ -25,6 +25,16 @@ function chromeMessageHandler(
         console.log('TRACK PAGE CONFIRMED')
         sendResponse({ type: 'TRACK PAGE CONFIRMED' });
       };
+      break;
+    case 'GET TRACK':
+      sendResponse({
+        type: 'CONVERT TRACK',
+        track: {
+          name: getSoundTitle(),
+          artist: getArtistNameFromSoundTitleHeader(),
+          uploadedBy: ''
+        }
+      });
       break;
     default:
       break;
@@ -44,7 +54,7 @@ function isCurrentlyOnSoundCloudTrackPage(): boolean {
   return true;
 }
 
-function getPlaylistName(): string {
+function getSoundTitle(): string {
   const playlistName = document.querySelector('.soundTitle__title')?.textContent?.trim();
   return playlistName ?? '';
 }
@@ -61,7 +71,7 @@ function getPlaylistTracks(): Track[] {
     return tracks;
   }
 
-  const uploadedBy = getArtistNameFromPlaylistHeader();
+  const uploadedBy = getArtistNameFromSoundTitleHeader();
   const trackElementsArray = Array.from(trackElements);
 
   for (const trackElement of trackElementsArray) {
@@ -75,7 +85,7 @@ function getPlaylistTracks(): Track[] {
   return tracks;
 }
 
-function getArtistNameFromPlaylistHeader(): string {
+function getArtistNameFromSoundTitleHeader(): string {
   const artistNameFromPlaylistHeader = document.querySelector('.soundTitle__usernameHeroContainer')?.textContent?.trim();
   return artistNameFromPlaylistHeader ?? '';
 }

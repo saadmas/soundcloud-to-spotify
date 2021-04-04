@@ -16,11 +16,11 @@ const ConversionResult = ({ conversionOutcome }: ConversionResultProps) => {
       case 'pending':
         return null;
       case 'success':
-        const successMessage = `Succesfully added the track to your Spotify Liked Songss! Check it out in the Spotify app.`;
+        const successMessage = `Succesfully added the track to your Spotify Liked Songs! Check it out in the Spotify app.`;
         return <SuccessBar successMessage={successMessage} />;
       case 'fail':
         const errorMessage = `Sorry, the track was not found on Spotify. This might be because the track is\
-        labelled differently on Spotify and SoundCloud. You could try searching for the tracks directly in the Spotify app.`;
+        labelled differently on Spotify and SoundCloud. You could try searching for the track directly in the Spotify app.`;
         return <ErrorBar errorMessage={errorMessage} />;
     }
   };

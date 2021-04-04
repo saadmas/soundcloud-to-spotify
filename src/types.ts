@@ -17,6 +17,10 @@ interface GetPlaylistMessage {
   type: 'GET PLAYLIST';
 }
 
+interface GetTrackMessage {
+  type: 'GET TRACK';
+}
+
 interface AuthFailMessage {
   type: 'AUTH FAIL';
 }
@@ -38,6 +42,11 @@ interface TrackPageConfirmedMessage {
   type: 'TRACK PAGE CONFIRMED';
 }
 
+interface ConvertTrackMessage {
+  type: 'CONVERT TRACK';
+  track: Track;
+}
+
 interface ConvertPlaylistMessage {
   type: 'CONVERT PLAYLIST';
   name: string;
@@ -45,5 +54,5 @@ interface ConvertPlaylistMessage {
 }
 
 export type Message = AuthFailMessage | AuthSuccessMessage | LoginMessage | GetPlaylistMessage | ConvertPlaylistMessage |
-  CheckTrackConversionTypeMessage | TrackPageConfirmedMessage;
+  CheckTrackConversionTypeMessage | TrackPageConfirmedMessage | ConvertTrackMessage | GetTrackMessage;
  

@@ -7,9 +7,13 @@ export interface SpotifyTrackSearchResult extends ApiResult {
   missingTracks: Track[];
 }
 
+export interface SpotifySingleTrackSearchResult extends ApiResult {
+  spotifyTrackId?: string;
+}
+
 export const LOGIN_FAIL_ERROR = 'An error occurred while connecting to your Spotify account. Please try again.'
 export const CONVERT_PLAYLIST_ERROR = 'An error while creating your Spotify playlist. Please try again.'
-
+export const CONVERT_TRACK_ERROR = 'An error while adding the track to your Spotify Liked Songs. Please try again.'
 
 export async function getSpotifyTrackId(track: Track, spotifyApi: SpotifyApiType): Promise<string | undefined> {
   const searchOptions = { market: 'from_token', limit: 1 };

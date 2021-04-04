@@ -5,12 +5,12 @@ import { Message, SpotifyApiType, Track } from '../../types';
 import './Converter.css';
 import Loader from '../Loader/Loader';
 import ConversionPrompt from '../ConversionPrompt/ConversionPrompt';
-import { CONVERT_PLAYLIST_ERROR, getSpotifyTrackId, LOGIN_FAIL_ERROR, SpotifyTrackSearchResult } from './utils/track';
+import { CONVERT_TRACK_ERROR, getSpotifyTrackId, LOGIN_FAIL_ERROR, SpotifySingleTrackSearchResult } from './utils/track';
 import SpotifyWebApi from 'spotify-web-api-js';
-import { addTracksToPlaylist } from './utils/playlist';
 import ConversionResult, { ConversionOutcome } from '../ConversionResult/ConversionResult';
 import ErrorBar from '../ErrorBar/ErrorBar';
 import { tryGetRetryAfter } from './utils/networkRequest';
+import { addTracksToLikedSongs } from './utils/likedSongs';
 
 const Converter = () => {
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -54,9 +54,10 @@ const Converter = () => {
         return;
       }
 
+      const getTrackMessage: Message = { type: 'GET TRACK' };
       chrome.tabs.sendMessage(
         currentTabId,
-        '///',
+        getTrackMessage,
         (response) => onResponseFromContentScript(response, authToken)
       );
     });
@@ -65,81 +66,72 @@ const Converter = () => {
   const onResponseFromContentScript = async (response: Message, authToken: string) => {
     const spotifyApi = new SpotifyWebApi();
     spotifyApi.setAccessToken(authToken);
-    switch (response.type) {
-      case 'CONVERT PLAYLIST':
-        setLoadingMessage('Adding tracks to Spotify playlist');
-        const { tracks, name } = response;
 
-        const { spotifyTrackIds, missingTracks, hasError: hasSearchError } = await getSpotifyTrackIds(tracks, spotifyApi);
-        console.log('GOT TRACK IDS!!!')
-        console.log(spotifyTrackIds)
-        console.log('missing tracks')
-        console.log(missingTracks)
-        if (hasSearchError) {
-          handleTrackConvertError();
-          break;
-        }
-
-        const areAllTracksMissing = tracks.length === missingTracks.length;
-        if (areAllTracksMissing) {
-          setConversionOutcome('fail');
-          break;
-        }
-
-        const { hasError: hasAddToLikedSongsError } = await addTracksToPlaylist(spotifyTrackIds, name, spotifyApi);
-        if (hasAddToLikedSongsError) {
-          handleTrackConvertError();
-          break;
-        }
-
-        setConversionOutcome('success');
-        break;
+    if (response.type !== 'CONVERT TRACK') {
+      return;
     }
+
+    setLoadingMessage('Adding track to your Spotify Liked Songs');
+
+    const { spotifyTrackId, hasError: hasSearchError } = await fetchSpotifyTrackId(response.track, spotifyApi);
+
+    if (hasSearchError) {
+      handleTrackConvertError();
+      setLoading(false);
+      setLoadingMessage('');
+      return;
+    }
+
+    if (!spotifyTrackId) {
+      setConversionOutcome('fail');
+      stopLoading();
+      return;
+    }
+
+    const { hasError: hasAddToLikedSongsError } = await addTracksToLikedSongs([spotifyTrackId], spotifyApi);
+    if (hasAddToLikedSongsError) {
+      handleTrackConvertError();
+      stopLoading();
+      return;
+    }
+
+    setConversionOutcome('success');
+    stopLoading();
+  };
+
+  const stopLoading = () => {
     setLoading(false);
     setLoadingMessage('');
   };
 
   const handleTrackConvertError = () => {
-    setErrorMessage(CONVERT_PLAYLIST_ERROR);
+    setErrorMessage(CONVERT_TRACK_ERROR);
   };
 
-  const getSpotifyTrackIds = async (
-    tracks: Track[],
+  const fetchSpotifyTrackId = async (
+    track: Track,
     spotifyApi: SpotifyApiType
-  ): Promise<SpotifyTrackSearchResult> => {
-    const spotifyTrackIds: string[] = [];
-    const missingTracks: Track[] = [];
+  ): Promise<SpotifySingleTrackSearchResult> => {
+    let spotifyTrackId: string | undefined;
     let hasError = false;
-    let index = 0;
   
-    while (index < tracks.length) {
+    while (true) {
       try {
-
-        const track = tracks[index];
-        index++;
-
-        const trackId = await getSpotifyTrackId(track, spotifyApi);
-
-
-        if (trackId === undefined) {
-          missingTracks.push(track);
-          continue;
-        }
-  
-        spotifyTrackIds.push(trackId);
+        spotifyTrackId = await getSpotifyTrackId(track, spotifyApi);
+        break;
       } catch (e) {
         const retryAfter = tryGetRetryAfter(e);
         if (!Number.isNaN(retryAfter)) {
-          index--;
           await new Promise(r => setTimeout(r, retryAfter + 1));
         } else {
           console.log(e);
           hasError = true;
+          break;
         }
       }
     }
   
-    return { spotifyTrackIds, missingTracks, hasError };
+    return { spotifyTrackId, hasError };
   }
 
   const onConvertClick = () => {

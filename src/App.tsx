@@ -2,7 +2,7 @@ import * as React from "react";
 import * as URLParse from "url-parse";
 const { useState, useEffect } = React;
 
-import Converter from "./Components/Converter/MultiTrackConverter/MultiTrackConverter";
+import Converter from "./Components/Converter/Converter";
 import Header from "./Components/Header/Header";
 
 import './App.css';
@@ -51,7 +51,7 @@ const App = () => {
       case 'likes':
         return <MultiTrackConverter conversionType={conversionType} />;
       case 'track':
-        return <div>TODO: Track converter</div>;
+        return <Converter />;
       default:
         return <div className="openSoundCloud">To use this extension, open a SoundCloud playlist, album, track or your Likes.</div>;
     }
