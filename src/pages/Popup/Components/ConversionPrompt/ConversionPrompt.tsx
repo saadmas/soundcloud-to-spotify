@@ -47,6 +47,8 @@ function getConversionPromptText(conversionType: ConversionType): string {
       return 'Convert to Spotify playlist';
     case 'track':
       return 'Add to Spotify Liked Songs';
+    case 'likes':
+      return 'Choose Likes to convert';
     default:
       return '';
   }

@@ -18,7 +18,7 @@ export async function addTracksToPlaylist(
       await addBatchedTracksToPlaylist(playlistId, trackIds, spotifyApi);
     }
   } catch {
-    hasError = true; /// re-run if 429 error
+    hasError = true;
   }
 
   return { hasError };

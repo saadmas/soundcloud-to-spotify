@@ -51,9 +51,9 @@ const MultiTrackConversionResult = ({
           }
         />
         <div className="extraErrorInfo">
-          This might be because they are labelled differently on Spotify and
-          SoundCloud. You could try searching for these tracks directly in the
-          Spotify app.
+          This might be because they are labelled differently between Spotify
+          and SoundCloud. You could try searching for these tracks directly in
+          the Spotify app.
         </div>
         <ul className="missingTracksList">{missingTrackElements}</ul>
       </div>
@@ -82,9 +82,9 @@ const MultiTrackConversionResult = ({
               None of the tracks in the playlist were found on Spotify.
             </span>
             <div className="directSearchPrompt">
-              This might be because they are labelled differently on Spotify and
-              SoundCloud. You could try searching for the tracks directly in the
-              Spotify app.
+              This might be because they are labelled differently between
+              Spotify and SoundCloud. You could try searching for the tracks
+              directly in the Spotify app.
             </div>
           </>
         );
@@ -96,7 +96,7 @@ const MultiTrackConversionResult = ({
   const renderConversionFail = () => {
     return (
       <div className="multiTrackConversionResult">
-        <span>Yikes! </span>
+        <span>Sorry! </span>
         {getConversionFailTextForConversionType()}
       </div>
     );

@@ -13,6 +13,10 @@ export function tryGetConversionTypeFromUrl(
   const pathParameters = pathname.split('/');
   const primaryParameter = pathParameters[2];
 
+  if (pathParameters[1] === 'discover') {
+    return;
+  }
+
   if (pathParameters.length > 3 && primaryParameter === 'sets') {
     return 'playlist';
   }

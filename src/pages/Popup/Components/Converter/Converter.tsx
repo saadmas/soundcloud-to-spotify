@@ -101,6 +101,7 @@ const Converter = () => {
       [spotifyTrackId],
       spotifyApi
     );
+
     if (hasAddToLikedSongsError) {
       handleTrackConvertError();
       stopLoading();

@@ -64,10 +64,6 @@ function getSoundTitle(): string {
 function getPlaylistTracks(): Track[] {
   const tracks: Track[] = [];
 
-  /// https://soundcloud.com/discover/sets/personalized-tracks::saadmasood:1248936598
-  // https://soundcloud.com/discover/sets/weekly::saadmasood
-  // https://soundcloud.com/discover/sets/artist-stations:81482933
-  // DIFF QUERY SELECTOR FOR RELATED TRACKS
   const trackListElement = document.querySelector('.trackList__list');
   const trackElements = trackListElement?.querySelectorAll('.trackList__item');
 
