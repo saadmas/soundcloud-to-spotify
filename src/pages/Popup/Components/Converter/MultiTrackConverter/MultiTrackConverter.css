@@ -1,0 +1,10 @@
+.converter {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100px;
+  position: relative;
+  height: 150px;
+  position: relative;
+}

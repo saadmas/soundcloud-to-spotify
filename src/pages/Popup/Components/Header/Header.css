@@ -1,0 +1,16 @@
+.header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+  font-size: 18px;
+  color: #fff;
+  background: rgb(255,107,0);
+  background: linear-gradient(90deg, rgba(255,107,0,1) 45%, rgba(29,185,84,1) 70%);
+}
+
+.header .appIcon {
+  height: 35px;
+  width: 35px;
+}

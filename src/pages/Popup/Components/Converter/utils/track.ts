@@ -1,0 +1,137 @@
+import { ApiResult, SpotifyApiType, Track } from '../../../../types';
+
+type SpotifySearchType = 'TRACK - ARTIST' | 'TRACK - UPLOADED BY' | 'TRACK';
+
+export interface SpotifyTrackSearchResult extends ApiResult {
+  spotifyTrackIds: string[];
+  missingTracks: Track[];
+}
+
+export interface SpotifySingleTrackSearchResult extends ApiResult {
+  spotifyTrackId?: string;
+}
+
+export const LOGIN_FAIL_ERROR =
+  'An error occurred while connecting to your Spotify account. Please try again.';
+export const CONVERT_PLAYLIST_ERROR =
+  'An error while creating your Spotify playlist. Please try again.';
+export const CONVERT_TRACK_ERROR =
+  'An error while adding the track to your Spotify Liked Songs. Please try again.';
+
+export async function getSpotifyTrackId(
+  track: Track,
+  spotifyApi: SpotifyApiType
+): Promise<string | undefined> {
+  const searchOptions = { market: 'from_token', limit: 1 };
+
+  const searchTypes: SpotifySearchType[] = ['TRACK - UPLOADED BY', 'TRACK'];
+  if (track.artist) {
+    searchTypes.unshift('TRACK - ARTIST');
+  }
+
+  for (const searchType of searchTypes) {
+    const searchQuery = getSpotifySearchQuery(track, searchType);
+    const searchResult = await spotifyApi.searchTracks(
+      searchQuery,
+      searchOptions
+    );
+    if (searchResult.tracks.items.length) {
+      console.log(searchResult.tracks.items[0]); //*
+      return searchResult.tracks.items[0].uri;
+    }
+  }
+
+  let cleanedTrack = getCleanedTrack(track);
+  for (const searchType of searchTypes) {
+    const searchQuery = getSpotifySearchQuery(cleanedTrack, searchType);
+    const searchResult = await spotifyApi.searchTracks(
+      searchQuery,
+      searchOptions
+    );
+    if (searchResult.tracks.items.length) {
+      console.log(searchResult.tracks.items[0]); //*
+      return searchResult.tracks.items[0].uri;
+    }
+  }
+
+  cleanedTrack = getCleanedTrack(track, true, true);
+  for (const searchType of searchTypes) {
+    const searchQuery = getSpotifySearchQuery(cleanedTrack, searchType);
+    const searchResult = await spotifyApi.searchTracks(
+      searchQuery,
+      searchOptions
+    );
+    if (searchResult.tracks.items.length) {
+      console.log(searchResult.tracks.items[0]); //*
+      return searchResult.tracks.items[0].uri;
+    }
+  }
+
+  return;
+}
+
+function getRegexTrackNameFilter(
+  removeBrackets?: boolean,
+  removeColonAppendedText?: boolean
+) {
+  const leadMatcher = '[\\.]*';
+  const prefixMatcher = '\\W';
+
+  // Remove ft. feat. featuring.
+  const featureFilters = [
+    `${prefixMatcher}featuring${leadMatcher}`,
+    `${prefixMatcher}feat${leadMatcher}`,
+    `${prefixMatcher}ft${leadMatcher}`,
+  ];
+
+  // Remove - &
+  const separatorfilters = ['-', '&'];
+
+  let filter = [...featureFilters, ...separatorfilters].join('|');
+
+  if (removeBrackets) {
+    // Remove anything WITHIN square brackets
+    const squareBracketFilter = '\\[.+\\]';
+    // Remove anything WITHIN round brackets
+    const roundBracketFilter = '\\(.+\\)';
+    filter = `${filter}|${squareBracketFilter}|${roundBracketFilter}`;
+  }
+
+  if (removeColonAppendedText) {
+    const colonAppendedTextFilter = '.*:';
+    filter = `${filter}|${colonAppendedTextFilter}`;
+  }
+
+  return new RegExp(filter, 'ig');
+}
+
+function getCleanedTrack(
+  track: Track,
+  removeBrackets?: boolean,
+  removeColonAppendedText?: boolean
+): Track {
+  const filter = getRegexTrackNameFilter(
+    removeBrackets,
+    removeColonAppendedText
+  );
+  return {
+    ...track,
+    name: track.name.replace(filter, ''),
+  };
+}
+
+function getSpotifySearchQuery(
+  track: Track,
+  searchType: SpotifySearchType
+): string {
+  const { name, artist, uploadedBy } = track;
+  switch (searchType) {
+    case 'TRACK':
+      return name;
+    case 'TRACK - UPLOADED BY':
+      return `${name} artist:${uploadedBy}`;
+    case 'TRACK - ARTIST':
+    default:
+      return `${name} artist:${artist}`;
+  }
+}

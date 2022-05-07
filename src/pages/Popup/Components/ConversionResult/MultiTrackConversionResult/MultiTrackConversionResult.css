@@ -1,0 +1,31 @@
+.multiTrackConversionResult {
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+}
+
+.extraErrorInfo {
+  margin-top: 10px;
+}
+
+.missingTracksResult {
+  margin-top: 10px;
+}
+
+.missingTrackArtist {
+  color: #b3b3b3;
+}
+
+.missingTracksList {
+  list-style-type: none;
+  padding-inline-start: 0px;
+}
+
+li.missingTrackListItem:not(:last-child) { 
+  margin-bottom: 8px;  
+}
+
+.directSearchPrompt {
+  margin-top: 20px;
+}

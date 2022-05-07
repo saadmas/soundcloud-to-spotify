@@ -1,12 +1,7 @@
 {
-  "name": "chrome-extension-boilerplate-react",
-  "version": "4.3.5",
-  "description": "A chrome extension boilerplate built with React 17, Webpack 5, and Webpack Dev Server 4",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lxieyang/chrome-extension-boilerplate-react.git"
-  },
+  "name": "soundcloud-to-spotify",
+  "version": "1.0.0",
+  "description": "Chrome extension to transfer Soundcloud playlists, albums, tracks, and Likes directly into your Spotify account",
   "scripts": {
     "build": "node utils/build.js",
     "start": "node utils/webserver.js",
@@ -14,9 +9,13 @@
   },
   "dependencies": {
     "@hot-loader/react-dom": "^17.0.2",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/lab": "^4.0.0-alpha.61",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-hot-loader": "^4.13.0"
+    "react-hot-loader": "^4.13.0",
+    "spotify-web-api-js": "^1.5.2",
+    "url-parse": "^1.5.10"
   },
   "devDependencies": {
     "@babel/core": "^7.17.0",
@@ -26,6 +25,8 @@
     "@types/chrome": "^0.0.177",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
+    "@types/spotify-web-api-js": "^0.21.0",
+    "@types/url-parse": "^1.4.8",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.3",
     "babel-preset-react-app": "^10.0.1",
