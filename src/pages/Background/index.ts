@@ -27,8 +27,8 @@ function chromeMessageHandler(
 function getSpotifyAuthUrl(state: string): string {
   const clientId = 'f5a2c30e102140d0970820bcd154dba8';
   const responseType = encodeURIComponent('token');
-  const redirecUri = encodeURIComponent(
-    'https://opdbejkeklgoefcmfeaehnnhpnnnnpii.chromiumapp.org/'
+  const redirectUri = encodeURIComponent(
+    'https://eplmffohmkeaplkdidbgjoeocnkfhdgj.chromiumapp.org/'
   );
   const scope = encodeURIComponent(
     [
@@ -40,7 +40,7 @@ function getSpotifyAuthUrl(state: string): string {
   );
 
   const baseUrl = 'https://accounts.spotify.com/authorize';
-  const queryString = `client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirecUri}&state=${state}&scope=${scope}`;
+  const queryString = `client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
 
   const spotifyAuthUrl = `${baseUrl}?${queryString}`;
   return spotifyAuthUrl;
