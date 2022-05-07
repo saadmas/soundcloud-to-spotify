@@ -5,10 +5,10 @@
   "background": { "service_worker": "background.bundle.js" },
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "icon-64.png"
+    "default_icon": "logo-64.png"
   },
   "icons": {
-    "128": "icon-64.png"
+    "128": "logo-64.png"
   },
   "content_scripts": [
     {
@@ -20,7 +20,7 @@
   "host_permissions": ["https://*.spotify.com/"],
   "web_accessible_resources": [
     {
-      "resources": ["icon-64.png"],
+      "resources": ["logo-64.png"],
       "matches": []
     }
   ]
